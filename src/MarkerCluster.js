@@ -1,69 +1,65 @@
 L.MarkerCluster = L.Marker.extend({
-	initialize: function (group, zoom, a, b) {
+	initialize: function (group, tree, root) {
 
-		L.Marker.prototype.initialize.call(this, a ? (a._cLatLng || a.getLatLng()) : new L.LatLng(0, 0), { icon: this });
+		L.Marker.prototype.initialize.call(this, tree.posAverage, { icon: this });
 
 
+		this._count = tree.count;
 		this._group = group;
-		this._zoom = zoom;
+		this._tree = tree;
+		this._root = root;
 
-		this._markers = [];
-		this._childClusters = [];
-		this._childCount = 0;
+		// this._markers = [];
+		// this._childClusters = [];
+		// this._childCount = tree.count;
 		this._iconNeedsUpdate = true;
 
-		this._bounds = new L.LatLngBounds();
-
-		if (a) {
-			this._addChild(a);
-		}
-		if (b) {
-			this._addChild(b);
-		}
+		this._bounds = tree.bounds;
 	},
 
 	//Recursively retrieve all child markers of this cluster
-	getAllChildMarkers: function (storageArray) {
-		storageArray = storageArray || [];
+	getAllChildMarkers: function () {
+		return this._root.leafsInRange(this._bounds);
+		// storageArray = storageArray || [];
 
-		for (var i = this._childClusters.length - 1; i >= 0; i--) {
-			this._childClusters[i].getAllChildMarkers(storageArray);
-		}
+		// for (var i = this._childClusters.length - 1; i >= 0; i--) {
+		// 	this._childClusters[i].getAllChildMarkers(storageArray);
+		// }
 
-		for (var j = this._markers.length - 1; j >= 0; j--) {
-			storageArray.push(this._markers[j]);
-		}
+		// for (var j = this._markers.length - 1; j >= 0; j--) {
+		// 	storageArray.push(this._markers[j]);
+		// }
 
-		return storageArray;
+		// return storageArray;
 	},
 
 	//Returns the count of how many child markers we have
 	getChildCount: function () {
-		return this._childCount;
+		return this._count;
 	},
 
 	//Zoom to the minimum of showing all of the child markers, or the extents of this cluster
 	zoomToBounds: function () {
-		var childClusters = this._childClusters.slice(),
-			map = this._group._map,
+		// var childClusters = this._childClusters.slice(),
+		var map = this._group._map,
 			boundsZoom = map.getBoundsZoom(this._bounds),
-			zoom = this._zoom + 1,
-			mapZoom = map.getZoom(),
-			i;
+			// zoom = this._zoom + 1,
+			mapZoom = map.getZoom();
+			// i;
 
-		//calculate how fare we need to zoom down to see all of the markers
-		while (childClusters.length > 0 && boundsZoom > zoom) {
-			zoom++;
-			var newClusters = [];
-			for (i = 0; i < childClusters.length; i++) {
-				newClusters = newClusters.concat(childClusters[i]._childClusters);
-			}
-			childClusters = newClusters;
-		}
+		// //calculate how fare we need to zoom down to see all of the markers
+		// while (childClusters.length > 0 && boundsZoom > zoom) {
+		// 	zoom++;
+		// 	var newClusters = [];
+		// 	for (i = 0; i < childClusters.length; i++) {
+		// 		newClusters = newClusters.concat(childClusters[i]._childClusters);
+		// 	}
+		// 	childClusters = newClusters;
+		// }
 
-		if (boundsZoom > zoom) {
-			this._group._map.setView(this._latlng, zoom);
-		} else if (boundsZoom <= mapZoom) { //If fitBounds wouldn't zoom us down, zoom us down instead
+		// if (boundsZoom > zoom) {
+		// 	this._group._map.setView(this._latlng, zoom);
+		if (boundsZoom <= mapZoom) { //If fitBounds wouldn't zoom us down, zoom us down instead
 			this._group._map.setView(this._latlng, mapZoom + 1);
 		} else {
 			this._group._map.fitBounds(this._bounds);

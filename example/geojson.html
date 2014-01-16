@@ -47,6 +47,7 @@
 			}
 		});
 		markers.addLayer(geoJsonLayer);
+		markers.update();
 
 		map.addLayer(markers);
 		map.fitBounds(markers.getBounds());

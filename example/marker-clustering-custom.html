@@ -40,11 +40,12 @@
 		var markers = L.markerClusterGroup({
 			maxClusterRadius: 120,
 			iconCreateFunction: function (cluster) {
-				var markers = cluster.getAllChildMarkers();
+				/*var markers = cluster.getAllChildMarkers();
 				var n = 0;
 				for (var i = 0; i < markers.length; i++) {
 					n += markers[i].number;
-				}
+				}*/
+				var n = cluster.getChildCount();
 				return L.divIcon({ html: n, className: 'mycluster', iconSize: L.point(40, 40) });
 			},
 			//Disable all of the defaults:

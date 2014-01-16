@@ -3,7 +3,7 @@ var deps = {
 	Core: {
 		src: ['MarkerClusterGroup.js',
 		      'MarkerCluster.js',
-		      'DistanceGrid.js'],
+		      'Tree.js'],
 		desc: 'The core of the library.'
 	},
 
