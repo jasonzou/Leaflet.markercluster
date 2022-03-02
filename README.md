@@ -1,4 +1,4 @@
-Leaflet.markercluster
+Leaflet.markercluster - a KD tree version
 =====================
 
 Provides Beautiful Animated Marker Clustering functionality for [Leaflet](http://leafletjs.com), a JS library for interactive maps.
